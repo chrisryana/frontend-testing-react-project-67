@@ -1,0 +1,42 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "Утилита для скачивания страницы через командную строку",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrisryana/frontend-testing-react-project-67.git"
+  },
+  "keywords": [
+    "hexlet-projects"
+  ],
+  "bin": {
+    "page-loader": "src/index.js"
+  },
+  "author": "Chris Ryana",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chrisryana/frontend-testing-react-project-67/issues"
+  },
+  "homepage": "https://github.com/chrisryana/frontend-testing-react-project-67#readme",
+  "dependencies": {
+    "axios": "1.6.2",
+    "commander": "11.1.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.23.4",
+    "@babel/core": "7.23.6",
+    "@babel/node": "7.22.19",
+    "@babel/preset-env": "7.23.6",
+    "babel-jest": "29.7.0",
+    "eslint": "8.55.0",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-plugin-import": "2.29.0",
+    "jest": "29.7.0",
+    "nock": "13.4.0",
+    "prettier": "3.1.1"
+  }
+}
