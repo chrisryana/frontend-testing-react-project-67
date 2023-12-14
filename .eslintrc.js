@@ -2,8 +2,11 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
+    node: true,
+    'jest/globals': true,
   },
-  extends: 'airbnb-base',
+  plugins: ['jest'],
+  extends: ['airbnb-base', 'plugin:jest/recommended'],
   overrides: [
     {
       env: {
@@ -22,5 +25,8 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
+    'no-console': 0,
+    'no-underscore-dangle': [2, { allow: ['__filename', '__dirname'] }],
+    'import/extensions': ['error'],
   },
 };

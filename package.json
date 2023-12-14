@@ -4,7 +4,7 @@
   "description": "Утилита для скачивания страницы через командную строку",
   "main": "src/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "npx jest"
   },
   "repository": {
     "type": "git",
@@ -31,10 +31,13 @@
     "@babel/core": "7.23.6",
     "@babel/node": "7.22.19",
     "@babel/preset-env": "7.23.6",
+    "@jest/globals": "29.7.0",
     "babel-jest": "29.7.0",
+    "babel-plugin-transform-import-meta": "2.2.1",
     "eslint": "8.55.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.29.0",
+    "eslint-plugin-jest": "^27.6.0",
     "jest": "29.7.0",
     "nock": "13.4.0",
     "prettier": "3.1.1"

@@ -14,5 +14,8 @@
         "corejs": "3.6.5"
       }
     ]
+  ],
+  "plugins": [
+    "babel-plugin-transform-import-meta"
   ]
 }
