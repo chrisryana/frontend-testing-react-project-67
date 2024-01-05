@@ -13,7 +13,8 @@
   },
   "scripts": {
     "test": "npx jest",
-    "start": "node index.js"
+    "start": "node index.js",
+    "start:cli": "node src/cli.js https://ru.hexlet.io/courses"
   },
   "repository": {
     "type": "git",
