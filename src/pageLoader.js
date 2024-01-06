@@ -42,31 +42,35 @@ export default async function pageLoader(url, src = process.cwd()) {
   const srcList = [];
 
   // eslint-disable-next-line func-names
-  $('img').each(function () {
-    const { origin } = new URL(url);
-    const oldSrc = $(this).attr('src');
-    const fullOldScr = oldSrc.startsWith('http') ? oldSrc : `${origin}${oldSrc}`;
+  $('img, link, script').each(function () {
+    const attrName = $(this)[0].name === 'link' ? 'href' : 'src';
+    const oldAttrValue = $(this).attr(attrName);
+    const oldSrc = new URL(oldAttrValue, url);
+    const entryLink = new URL(url);
 
-    const oldSrcSplited = oldSrc.split('/');
-    const oldPath = oldSrcSplited.slice(0, -1);
-    const imgFile = oldSrcSplited.at(-1);
-    const [imgName, imgExt] = imgFile.split('.');
-    const newImgName = getFilename([origin, oldPath, imgName].join('-'), `.${imgExt}`);
-    const newSrc = path.join(src, assetsFolder, newImgName);
-    $(this).attr('src', path.join(assetsFolder, newImgName));
+    if (oldSrc.origin === entryLink.origin && oldAttrValue) {
+      const oldSrcSplited = oldSrc.pathname.split('/');
+      const oldPath = oldSrcSplited.slice(0, -1);
+      const file = oldSrcSplited.at(-1);
+      const [fileName, fileExt] = file.split('.');
 
-    srcList.push({ imgSrc: fullOldScr, imgPath: newSrc });
+      const newFileName = getFilename([oldSrc.origin, oldPath, fileName].join('-'), `.${fileExt || 'html'}`);
+      const newSrc = path.join(src, assetsFolder, newFileName);
+      $(this).attr(attrName, path.join(assetsFolder, newFileName));
+
+      srcList.push({ fileSrc: oldSrc, filePath: newSrc });
+    }
   });
 
   await Promise.all([
     // Сохряняем html
     fs.writeFile(path.join(src, filename), $.html()),
-    // Сохраняем все найденные картинки
-    ...srcList.map(({ imgSrc, imgPath }) => {
-      console.log(`Начало запроса к ${imgSrc}`);
-      return axios.get(imgSrc, { responseType: 'arraybuffer' }).then(({ data: image }) => {
-        console.log(`Запись файла изображения в ${imgPath}`);
-        return fs.writeFile(imgPath, image);
+    // Сохраняем все найденные файлы
+    ...srcList.map(({ fileSrc, filePath }) => {
+      console.log(`Начало запроса к ${fileSrc}`);
+      return axios.get(fileSrc).then(({ data: image }) => {
+        console.log(`Запись файла в ${filePath}`);
+        return fs.writeFile(filePath, image);
       });
     }),
   ]);
