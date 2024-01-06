@@ -2,6 +2,10 @@ import fs from 'fs/promises';
 import axios from 'axios';
 import path from 'path';
 import * as cheerio from 'cheerio';
+import debug from 'debug';
+import 'axios-debug-log';
+
+const log = debug('page-loader');
 
 /**
  * Генерирует имя файла или папки из переданной строки
@@ -38,6 +42,8 @@ export default async function pageLoader(url, src = process.cwd()) {
 
   await fs.mkdir(path.join(src, assetsFolder));
 
+  log('Создана папка', path.join(src, assetsFolder));
+
   const $ = cheerio.load(html, { decodeEntities: false });
   const srcList = [];
 
@@ -48,6 +54,7 @@ export default async function pageLoader(url, src = process.cwd()) {
     const oldSrc = new URL(oldAttrValue, url);
     const entryLink = new URL(url);
 
+    // Не скачиваем ресурсы с других доменов, даже с cdn
     if (oldSrc.origin === entryLink.origin && oldAttrValue) {
       const oldSrcSplited = oldSrc.pathname.split('/');
       const oldPath = oldSrcSplited.slice(0, -1);
@@ -58,7 +65,7 @@ export default async function pageLoader(url, src = process.cwd()) {
       const newSrc = path.join(src, assetsFolder, newFileName);
       $(this).attr(attrName, path.join(assetsFolder, newFileName));
 
-      srcList.push({ fileSrc: oldSrc, filePath: newSrc });
+      srcList.push({ fileSrc: oldSrc.href, filePath: newSrc });
     }
   });
 
@@ -67,9 +74,10 @@ export default async function pageLoader(url, src = process.cwd()) {
     fs.writeFile(path.join(src, filename), $.html()),
     // Сохраняем все найденные файлы
     ...srcList.map(({ fileSrc, filePath }) => {
-      console.log(`Начало запроса к ${fileSrc}`);
-      return axios.get(fileSrc).then(({ data: image }) => {
-        console.log(`Запись файла в ${filePath}`);
+      log(`Начало запроса к ${fileSrc}`);
+      return axios.get(fileSrc, { responseType: 'arraybuffer' }).then(({ data: image }) => {
+        log(`Запись файла в ${filePath}`);
+        console.log('✓', fileSrc);
         return fs.writeFile(filePath, image);
       });
     }),
