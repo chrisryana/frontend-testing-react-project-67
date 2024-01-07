@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Утилита для скачивания страницы через командную строку",
   "bin": {
-    "page-loader": "index.js"
+    "page-loader": "src/cli.js"
   },
   "simple-git-hooks": {
     "pre-push": "make lint"
