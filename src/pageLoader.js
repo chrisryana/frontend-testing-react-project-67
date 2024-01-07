@@ -115,5 +115,7 @@ export default async function pageLoader(url, src = process.cwd()) {
     }
   });
 
+  const dirMessage = src === process.cwd() ? 'текущую директорию' : path.join(src, filename);
+  console.log(`\nСтраница ${url} была успешно загружена в ${dirMessage}`);
   return { filepath: path.join(src, filename) };
 }

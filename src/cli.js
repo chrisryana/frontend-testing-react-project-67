@@ -13,7 +13,6 @@ program
     try {
       console.log('Начало загрузки...\n');
       await pageLoader(url, options.output);
-      console.log(`\nСтраница ${url} была успешно загружена в ${options.output || 'текущую директорию'}`);
     } catch (error) {
       console.error(error.message || '\nНеизвестная ошибка. Проверте url');
       process.exit(1);
