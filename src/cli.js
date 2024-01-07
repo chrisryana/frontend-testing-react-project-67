@@ -3,7 +3,7 @@ import pageLoader from './pageLoader.js';
 
 program
   .name('page-loader')
-  .description('CLI для скачивания ресурсов сайта')
+  .description('CLI для скачивания сайта и его ресурсов')
   .version('1.0.0');
 
 program
@@ -11,11 +11,12 @@ program
   .option('-o, --output <dir>', `Путь для сохранения файлов. По умолчанию ${process.cwd()}`)
   .action(async (url, options) => {
     try {
-      console.log('Начало скачивания...\n');
+      console.log('Начало загрузки...\n');
       await pageLoader(url, options.output);
-      console.log(`\nСтраница ${url} была успешно скачана в ${options.output || 'текущую директорию'}`);
+      console.log(`\nСтраница ${url} была успешно загружена в ${options.output || 'текущую директорию'}`);
     } catch (error) {
-      console.error(error || '\nНеизвестная ошибка. Проверте url для скачивания');
+      console.error(error.message || '\nНеизвестная ошибка. Проверте url');
+      process.exit(1);
     }
   });
 
