@@ -79,4 +79,24 @@ describe('page-loader', () => {
     expect(resultJs).toBe(expectJs);
     expect(resultCss).toBe(expectCss);
   });
+
+  test('Ошибки запросов обрабатываются', async () => {
+    nock(HOST)
+      .get('/courses')
+      .reply(404);
+
+    expect.assertions(1);
+
+    await expect(() => pageLoader(`${HOST}/courses`, tmpDir)).rejects.toThrow('404');
+  });
+
+  test('Ошибки файловой системы обрабатываются', async () => {
+    nock(HOST)
+      .get('/courses')
+      .reply(200, initialHtml);
+
+    expect.assertions(1);
+
+    await expect(() => pageLoader(`${HOST}/courses`, path.join(tmpDir, 'wrong_folder'))).rejects.toThrow('Папка не найдена');
+  });
 });

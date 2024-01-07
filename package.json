@@ -12,7 +12,7 @@
     "node": ">=14"
   },
   "scripts": {
-    "test": "DEBUG=nock.* npx jest",
+    "test": "DEBUG=nock.scope:ru.hexlet.io npx jest",
     "start": "node index.js",
     "start:cli": "node src/cli.js https://ru.hexlet.io/courses",
     "debug": "DEBUG=* npm run start:cli",
