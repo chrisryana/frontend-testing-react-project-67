@@ -77,7 +77,7 @@ export default async function pageLoader(url, src = process.cwd()) {
     if (oldSrc.origin === entryLink.origin && oldAttrValue) {
       const oldSrcSplited = oldSrc.pathname.split('/');
       const oldPath = oldSrcSplited.slice(0, -1);
-      const file = oldSrcSplited.at(-1);
+      const file = oldSrcSplited.slice(-1)[0];
       const [fileName, fileExt] = file.split('.');
 
       const newFileName = getFilename([oldSrc.origin, oldPath, fileName].join('-'), `.${fileExt || 'html'}`);
@@ -105,7 +105,7 @@ export default async function pageLoader(url, src = process.cwd()) {
     log(error);
 
     if (ERRORS_BY_CODE[error.code]) {
-      console.log('✗', error.path.split('/').at(-1));
+      console.log('✗', error.path.split('/').slice(-1));
       throw new Error(`${ERRORS_BY_CODE[error.code]} ${error.path}`);
     } else if (error.response) {
       console.log('✗', error.config.url);
