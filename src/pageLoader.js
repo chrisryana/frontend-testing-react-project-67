@@ -8,6 +8,18 @@ import 'axios-debug-log';
 const log = debug('page-loader');
 
 /**
+ * Ошибки node по кодам
+ * @link https://severclimat.ru/node-js-error-codes/
+ */
+const ERRORS_BY_CODE = {
+  ECONNREFUSED: '✗ Кажется сайт, который вы хотите скачать больше не доступен. Проверьте, что он открывается в браузере и попробуйте еще раз\n',
+  ENOENT: '✗ Папка не найдена. Создайте ее и попробуйте еще раз\n',
+  EACCES: '✗ Нет прав для выполнения\n',
+  ETIMEDOUT: '✗ Процесс экстренно завершен изза превышения по времени\n',
+  EEXIST: '✗ Папка для файлов сайта уже существует. Удалите или выберите другой путь для сохранения\n',
+};
+
+/**
  * Генерирует имя файла или папки из переданной строки
  *
  * @param {string} string – строка для генерации названия или пути файла
@@ -31,8 +43,11 @@ export const getFilename = (string, extension) => {
  * @return {object} { filepath: string }
  */
 export default async function pageLoader(url, src = process.cwd()) {
-  if (!url) {
-    throw new Error(`Отсутствует url: ${url} для скачивания`);
+  try {
+    // eslint-disable-next-line no-new
+    new URL(url);
+  } catch (error) {
+    throw new Error(`Невалидный url: ${url}`);
   }
 
   const filename = getFilename(url, '.html');
@@ -40,9 +55,13 @@ export default async function pageLoader(url, src = process.cwd()) {
 
   const { data: html } = await axios.get(url);
 
-  await fs.mkdir(path.join(src, assetsFolder));
-
-  log('Создана папка', path.join(src, assetsFolder));
+  try {
+    await fs.mkdir(path.join(src, assetsFolder));
+    log('Создана папка', path.join(src, assetsFolder));
+  } catch (error) {
+    log('Ошибка создания папки', error);
+    throw new Error(`${ERRORS_BY_CODE[error.code]} ${error.path}`);
+  }
 
   const $ = cheerio.load(html, { decodeEntities: false });
   const srcList = [];
@@ -72,16 +91,29 @@ export default async function pageLoader(url, src = process.cwd()) {
   await Promise.all([
     // Сохряняем html
     fs.writeFile(path.join(src, filename), $.html()),
+
     // Сохраняем все найденные файлы
     ...srcList.map(({ fileSrc, filePath }) => {
       log(`Начало запроса к ${fileSrc}`);
-      return axios.get(fileSrc, { responseType: 'arraybuffer' }).then(({ data: image }) => {
+      return axios.get(fileSrc, { responseType: 'arraybuffer' }).then(({ data: file }) => {
         log(`Запись файла в ${filePath}`);
         console.log('✓', fileSrc);
-        return fs.writeFile(filePath, image);
+        return fs.writeFile(filePath, file);
       });
     }),
-  ]);
+  ]).catch((error) => {
+    log(error);
+
+    if (ERRORS_BY_CODE[error.code]) {
+      console.log('✗', error.path.split('/').at(-1));
+      throw new Error(`${ERRORS_BY_CODE[error.code]} ${error.path}`);
+    } else if (error.response) {
+      console.log('✗', error.config.url);
+      throw new Error(`\nОшибка запроса ${error.response.status} ${error.response.statusText}`);
+    } else {
+      throw new Error(error.message);
+    }
+  });
 
   return { filepath: path.join(src, filename) };
 }
