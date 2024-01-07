@@ -105,7 +105,7 @@ export default async function pageLoader(url, src = process.cwd()) {
     log(error);
 
     if (ERRORS_BY_CODE[error.code]) {
-      console.log('✗', error.path.split('/').slice(-1));
+      console.log('✗', error.path.split('/').slice(-1)[0]);
       throw new Error(`${ERRORS_BY_CODE[error.code]} ${error.path}`);
     } else if (error.response) {
       console.log('✗', error.config.url);
