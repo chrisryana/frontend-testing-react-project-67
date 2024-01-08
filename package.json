@@ -13,9 +13,9 @@
     "node": ">=14"
   },
   "scripts": {
-    "test": "DEBUG=nock.scope:ru.hexlet.io npx jest",
+    "test": "DEBUG=nock.scope:ru.hexlet.io npx jest --coverage --verbose",
     "start": "node index.js",
-    "start:cli": "node src/cli.js https://ru.hexlet.io/courses",
+    "start:cli": "node bin/pageLoader.js https://ru.hexlet.io/courses",
     "debug": "DEBUG=* npm run start:cli",
     "debug:page-loader": "DEBUG=page-loader npm run start:cli",
     "debug:axios": "DEBUG=axios npm run start:cli"

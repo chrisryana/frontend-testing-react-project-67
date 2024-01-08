@@ -80,7 +80,7 @@ describe('page-loader', () => {
     expect(resultCss).toBe(expectCss);
   });
 
-  test('Ошибки запросов обрабатываются', async () => {
+  test('Ошибки запросов', async () => {
     nock(HOST)
       .get('/courses')
       .reply(404);
@@ -90,7 +90,7 @@ describe('page-loader', () => {
     await expect(() => pageLoader(`${HOST}/courses`, tmpDir)).rejects.toThrow('404');
   });
 
-  test('Ошибки файловой системы обрабатываются', async () => {
+  test('Ошибки файловой системы', async () => {
     nock(HOST)
       .get('/courses')
       .reply(200, initialHtml);
@@ -98,5 +98,15 @@ describe('page-loader', () => {
     expect.assertions(1);
 
     await expect(() => pageLoader(`${HOST}/courses`, path.join(tmpDir, 'wrong_folder'))).rejects.toThrow('Папка не найдена');
+  });
+
+  test('Ошибка при неправильном урле', async () => {
+    nock(HOST)
+      .get('/courses')
+      .reply(200, initialHtml);
+
+    expect.assertions(1);
+
+    await expect(() => pageLoader('wrongUrl')).rejects.toThrow('Невалидный url');
   });
 });
