@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Утилита для скачивания страницы через командную строку",
   "bin": {
-    "page-loader": "src/cli.js"
+    "page-loader": "bin/pageLoader.js"
   },
+  "main": "index.js",
   "simple-git-hooks": {
     "pre-push": "make lint"
   },

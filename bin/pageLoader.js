@@ -1,5 +1,5 @@
 import { program } from 'commander';
-import pageLoader from './pageLoader.js';
+import pageLoader from '../src/pageLoader.js';
 
 program
   .name('page-loader')
