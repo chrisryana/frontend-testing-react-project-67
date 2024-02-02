@@ -7,8 +7,7 @@
   },
   "main": "index.js",
   "simple-git-hooks": {
-    "pre-commit": "make lint",
-    "pre-push": "make test"
+    "pre-commit": "make lint"
   },
   "engines": {
     "node": ">=14"

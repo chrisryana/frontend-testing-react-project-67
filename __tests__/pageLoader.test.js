@@ -1,4 +1,3 @@
-import { fileURLToPath } from 'url';
 import os from 'os';
 import fs from 'fs/promises';
 import path from 'path';
@@ -6,8 +5,6 @@ import nock from 'nock';
 
 import pageLoader, { getFilename } from '../src/pageLoader.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const HOST = 'https://ru.hexlet.io';
 let tmpDir = '';
 let initialHtml;
